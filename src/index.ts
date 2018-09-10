@@ -1,27 +1,96 @@
-import * as OpenAPI from "./specs";
+import {
+  Request,
+  Response,
+  NextFunction,
+  IRouter,
+  RequestHandler
+} from "express-serve-static-core";
+import trimEnd = require("lodash.trimend");
+import { loadAPIs, parseAPIs } from "./api";
 import * as types from "./types";
-import * as SwaggerParser from "swagger-parser";
 
-const parser = new SwaggerParser();
+const unauthorized = (req: Request, res: Response, next: NextFunction) => {
+  req.statusCode = 401;
+  next(new SecurityError("Unauthorized"));
+};
 
-export function parseAPIs(spec: OpenAPI.Document) {
-  Object.keys(spec.paths).map(urlPath => {
+const pickMap = {
+  query: "query",
+  header: "headers",
+  path: "params",
+  cookie: "cookies",
+  requestBody: "body"
+};
 
-  })
-}
-
-export async function loadAPIFile(file: string) {
-  const obj = await parser.dereference(file);
-  if (!obj.openapi) {
-    throw new Error(`not satisfied openapi spec, parse ${file}`);
+export class ValidateError extends Error {
+  public readonly errors: types.ErrorObject[];
+  constructor(msg, errors: types.ErrorObject[]) {
+    super(msg);
+    this.errors = errors;
   }
-  return <OpenAPI.Document>obj;
 }
 
-export async function loadAPIs(file: string) {
-  const spec = await loadAPIFile(file);
-  return parseAPIs(spec);
+export class SecurityError extends Error {
+  constructor(msg) {
+    super(msg);
+  }
 }
 
-export * from "./specs";
+export async function openapize(router: IRouter, options: types.Options) {
+  let apis: types.API[];
+  if (typeof options.api === "string") {
+    apis = await loadAPIs(options.api);
+  } else {
+    apis = await parseAPIs(options.api);
+  }
+  apis.forEach(api => {
+    const handler = options.handlers && options.handlers[api.name];
+    const security =
+      options.security && api.security && options.security[api.security.name];
+    if (options.mapAPI) {
+      api = options.mapAPI(api);
+    }
+    mountAPI(router, api, handler, security);
+  });
+}
+
+function mountAPI(
+  router: IRouter,
+  api: types.API,
+  handler?: RequestHandler,
+  security?: RequestHandler
+) {
+  const mountPath = trimEnd(api.path.replace(/{([^}]+)}/g, ":$1"), "/");
+  const handlerFuncs = [];
+  handlerFuncs.push((req: Request, res: Response, next: NextFunction) => {
+    req.openapi = api;
+    next();
+  });
+  if (api.security) {
+    handlerFuncs.push(security ? security : unauthorized);
+  }
+  const validatorKinds = Object.keys(api.validator);
+  if (validatorKinds.length > 0) {
+    handlerFuncs.push((req: Request, res: Response, next: NextFunction) => {
+      const errors = [];
+      validatorKinds.map(kind => {
+        const validate = <types.Validate>api.validator[kind];
+        const key = pickMap[kind];
+        if (!validate(req[key], key)) {
+          errors.push(...validate.errors);
+        }
+      });
+      if (errors.length > 0) {
+        next(new ValidateError("Validation failed", errors));
+      } else {
+        next();
+      }
+    });
+  }
+  if (handler) {
+    handlerFuncs.push(handler);
+  }
+  router[api.method].apply(router, [mountPath, ...handlerFuncs]);
+}
+
 export * from "./types";

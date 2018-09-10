@@ -1,3 +1,15 @@
+import { RequestHandler } from "express-serve-static-core";
+import * as Ajv from "ajv";
+import * as specs from "./specs";
+
+declare global {
+  namespace Express {
+    export interface Request {
+      openapi: API;
+    }
+  }
+}
+
 export type Method =
   | "get"
   | "put"
@@ -5,17 +17,46 @@ export type Method =
   | "delete"
   | "options"
   | "head"
-  | "patch";
+  | "patch"
+  | "trace";
 
-export type Security = {
-  type: "apiKey" | "http" | "oauth2" | "openIdConnect";
+export interface Security {
+  name: string;
   value: string[];
-};
+}
+
+export interface Validator {
+  query?: Validate;
+  header?: Validate;
+  path?: Validate;
+  cookie?: Validate;
+  requestBody: Validate;
+}
+
+export type Validate = Ajv.ValidateFunction;
+
+export type ErrorObject = Ajv.ErrorObject;
 
 export interface API {
   name: string;
   path: string;
   method: Method;
-  security: Security;
-  validate: (data: any) => void;
+  security?: Security;
+  validator: Validator;
 }
+
+export interface Options {
+  api: string | specs.Document;
+  // handler funcs
+  handlers?: HandlerFuncMap;
+  // security middleware funcs
+  security?: HandlerFuncMap;
+  // map apis
+  mapAPI?: (api: API) => API;
+}
+
+export interface HandlerFuncMap {
+  [k: string]: RequestHandler;
+}
+
+export * from "./specs";

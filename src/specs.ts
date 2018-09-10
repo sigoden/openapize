@@ -58,7 +58,7 @@ export interface PathItemObject {
   patch?: OperationObject;
   trace?: OperationObject;
   servers?: ServerObject[];
-  parameters?: (ReferenceObject | ParameterObject)[];
+  parameters?: Array<ReferenceObject | ParameterObject>;
 }
 
 export interface OperationObject {
@@ -67,7 +67,7 @@ export interface OperationObject {
   description?: string;
   externalDocs?: ExternalDocumentationObject;
   operationId?: string;
-  parameters?: (ReferenceObject | ParameterObject)[];
+  parameters?: Array<ReferenceObject | ParameterObject>;
   requestBody?: ReferenceObject | RequestBodyObject;
   responses?: ResponsesObject;
   callbacks?: { [callback: string]: ReferenceObject | CallbackObject };
@@ -145,9 +145,9 @@ interface BaseSchemaObject {
   properties?: {
     [name: string]: SchemaObject;
   };
-  allOf?: (ReferenceObject | SchemaObject)[];
-  oneOf?: (ReferenceObject | SchemaObject)[];
-  anyOf?: (ReferenceObject | SchemaObject)[];
+  allOf?: Array<ReferenceObject | SchemaObject>;
+  oneOf?: Array<ReferenceObject | SchemaObject>;
+  anyOf?: Array<ReferenceObject | SchemaObject>;
   not?: ReferenceObject | SchemaObject;
 
   // OpenAPI-specific properties

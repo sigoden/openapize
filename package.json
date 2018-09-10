@@ -1,0 +1,59 @@
+{
+  "name": "@sigodenjs/openapize",
+  "version": "0.0.0",
+  "description": "Mount rest api depends on OpenAPI doc file for express app.",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:prod": "tsc -p tsconfig.prod.json",
+    "clean": "rimraf dist",
+    "test": "jest",
+    "prepublish": "npm run -s clean && npm run -s build:prod",
+    "lint": "tslint -p tsconfig.json --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sigoden/openapize.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sigoden/openapize/issues"
+  },
+  "homepage": "https://github.com/sigoden/openapize#readme",
+  "author": "Sigoden Huang <sigoden@gmail.com> (https://sigoden.com/)",
+  "license": "MIT",
+  "directories": {
+    "test": "test"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "openapi",
+    "express",
+    "dee"
+  ],
+  "dependencies": {
+    "@types/express-serve-static-core": "^4.16.0",
+    "ajv": "^6.5.3",
+    "decimal.js": "^10.0.1",
+    "lodash.capitalize": "^4.2.1",
+    "lodash.trimend": "^4.5.1",
+    "swagger-parser": "^5.0.5"
+  },
+  "devDependencies": {
+    "@types/express": "^4.16.0",
+    "@types/jest": "^23.3.2",
+    "@types/lodash.capitalize": "^4.2.4",
+    "@types/lodash.trimend": "^4.5.4",
+    "@types/node": "^10.9.4",
+    "@types/supertest": "^2.0.6",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "jest": "^23.5.0",
+    "rimraf": "^2.6.2",
+    "supertest": "^3.3.0",
+    "ts-jest": "^23.1.4",
+    "typescript": "^3.0.3"
+  }
+}
