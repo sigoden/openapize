@@ -39,7 +39,8 @@ export function parseAPIs(spec: types.Document) {
         api.name = operationObj.operationId
           ? operationObj.operationId
           : genOpName(method, urlPath);
-        if (operationObj.security) {
+        operationObj.security = operationObj.security || spec.security;
+        if (operationObj.security && operationObj.security.length > 0) {
           const securityObj = operationObj.security[0];
           const securityName = Object.keys(securityObj)[0];
           api.security = <types.Security>{
