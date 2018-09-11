@@ -66,7 +66,7 @@ function mergeParameters(
   }
   const pathItemParams = <types.ParameterObject[]>pathItemObj.parameters;
   const operationParams = <types.ParameterObject[]>(operationObj.parameters || []);
-  for (let pathItemParam of pathItemParams) {
+  for (const pathItemParam of pathItemParams) {
     if (
       operationParams.find(
         p => p.in === pathItemParam.in && p.name === pathItemParam.name

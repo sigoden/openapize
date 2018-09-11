@@ -22,7 +22,7 @@ const pickMap = {
   requestBody: "body"
 };
 
-export class ValidateError extends Error {
+export class ValidationError extends Error {
   public readonly errors: types.ErrorObject[];
   constructor(msg, errors: types.ErrorObject[]) {
     super(msg);
@@ -81,7 +81,7 @@ function mountAPI(
         }
       });
       if (errors.length > 0) {
-        next(new ValidateError("Validation failed", errors));
+        next(new ValidationError("Validation failed", errors));
       } else {
         next();
       }
