@@ -36,6 +36,7 @@ export function parseAPIs(spec: types.Document) {
       if (METHODS.indexOf(method) > -1) {
         const api: types.API = <any>{ method, path: urlPath };
         const operationObj = <types.OperationObject>pathItemObj[method];
+        mergeParameters(pathItemObj, operationObj);
         api.name = operationObj.operationId
           ? operationObj.operationId
           : genOpName(method, urlPath);
@@ -54,6 +55,27 @@ export function parseAPIs(spec: types.Document) {
     });
   });
   return apis;
+}
+
+function mergeParameters(
+  operationObj: types.OperationObject,
+  pathItemObj: types.PathItemObject
+) {
+  if (!pathItemObj.parameters || pathItemObj.parameters.length === 0) {
+    return;
+  }
+  const pathItemParams = <types.ParameterObject[]>pathItemObj.parameters;
+  const operationParams = <types.ParameterObject[]>(operationObj.parameters || []);
+  for (let pathItemParam of pathItemParams) {
+    if (
+      operationParams.find(
+        p => p.in === pathItemParam.in && p.name === pathItemParam.name
+      )
+    ) {
+      continue;
+    }
+    operationParams.push(pathItemParam);
+  }
 }
 
 function genOpName(method: string, urlPath: string) {
