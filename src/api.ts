@@ -36,6 +36,7 @@ export function parseAPIs(spec: types.Document) {
       if (METHODS.indexOf(method) > -1) {
         const api: types.API = <any>{ method, path: urlPath };
         const operationObj = <types.OperationObject>pathItemObj[method];
+        operationObj.parameters = operationObj.parameters || [];
         mergeParameters(pathItemObj, operationObj);
         api.name = operationObj.operationId
           ? operationObj.operationId
@@ -58,14 +59,14 @@ export function parseAPIs(spec: types.Document) {
 }
 
 function mergeParameters(
-  operationObj: types.OperationObject,
-  pathItemObj: types.PathItemObject
+  pathItemObj: types.PathItemObject,
+  operationObj: types.OperationObject
 ) {
   if (!pathItemObj.parameters || pathItemObj.parameters.length === 0) {
     return;
   }
   const pathItemParams = <types.ParameterObject[]>pathItemObj.parameters;
-  const operationParams = <types.ParameterObject[]>(operationObj.parameters || []);
+  const operationParams = <types.ParameterObject[]>operationObj.parameters;
   for (const pathItemParam of pathItemParams) {
     if (
       operationParams.find(
@@ -113,9 +114,12 @@ function setParameterValiator(
     return;
   }
   const schema = kindOfParameters.reduce((s, p) => {
-    s[p.name] = p.schema;
+    s.properties[p.name] = p.schema;
+    if (p.required) {
+      s.required.push(p.name);
+    }
     return s;
-  }, {});
+  }, { type: "object", properties: {}, required: [] });
   validator[kind] = <types.Validate>parse.compile(schema);
 }
 
