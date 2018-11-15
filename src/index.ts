@@ -50,7 +50,12 @@ export async function openapize(router: IRouter, options: types.Options) {
     if (options.mapAPI) {
       api = options.mapAPI(api);
     }
-    mountAPI(router, api, handler, security);
+    if (handler) {
+      mountAPI(router, api, handler, security);
+    } else {
+      const fn = options.noHandlerAPI || (() => {});
+      fn(api);
+    }
   });
 }
 
@@ -87,9 +92,7 @@ function mountAPI(
       }
     });
   }
-  if (handler) {
-    handlerFuncs.push(handler);
-  }
+  handlerFuncs.push(handler);
   router[api.method].apply(router, [mountPath, ...handlerFuncs]);
 }
 

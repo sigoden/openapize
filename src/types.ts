@@ -51,8 +51,10 @@ export interface Options {
   handlers?: HandlerFuncMap;
   // security middleware funcs
   security?: HandlerFuncMap;
-  // map apis
+  // hook to modify api
   mapAPI?: (api: API) => API;
+  // no handler for api
+  noHandlerAPI?: (api: API) => any;
 }
 
 export interface HandlerFuncMap {

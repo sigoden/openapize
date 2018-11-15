@@ -79,3 +79,19 @@ describe("validate input", () => {
     });
   });
 });
+
+test("noHandlerAPI", async () => {
+  const app = express();
+  app.use(bodyParser.json());
+  const noHandlerApis = [];
+  await Openapize.openapize(app, {
+    api: path.resolve(__dirname, "fixtures/petstore.yaml"),
+    handlers: require("./fixtures/handlers2"),
+    security: require("./fixtures/security"),
+    noHandlerAPI: api => {
+      noHandlerApis.push(api);
+    }
+  });
+  expect(noHandlerApis).toHaveLength(1);
+  expect(noHandlerApis[0].name).toBe("postPets");
+});

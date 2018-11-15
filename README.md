@@ -13,7 +13,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
-swaggerize(app, {
+openapize(app, {
   // openapi file
   api: require("./fixtures/defs/pets.json"),
   // handler funcs
@@ -23,6 +23,10 @@ swaggerize(app, {
   // hook to modify api
   mapAPI: function(api) {
     return api;
+  },
+  // no handler for api
+  noHandlerAPI: function(api) {
+
   }
 });
 ```
