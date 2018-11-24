@@ -43,6 +43,7 @@ export interface API {
   method: Method;
   security?: Security;
   validator: Validator;
+  tags?: string[];
 }
 
 export interface Options {
