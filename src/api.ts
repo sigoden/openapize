@@ -90,22 +90,24 @@ function genOpName(method: string, urlPath: string) {
 
 function createValidator(operationObj: types.OperationObject) {
   const validator: types.Validator = <any>{};
+  const operationId = operationObj.operationId;
   if (operationObj.parameters) {
     const parameters = <types.ParameterObject[]>operationObj.parameters;
-    setParameterValiator(validator, "query", parameters);
-    setParameterValiator(validator, "header", parameters);
-    setParameterValiator(validator, "path", parameters);
-    setParameterValiator(validator, "cookie", parameters);
+    setParameterValiator(validator, operationId, "query", parameters);
+    setParameterValiator(validator, operationId, "header", parameters);
+    setParameterValiator(validator, operationId, "path", parameters);
+    setParameterValiator(validator, operationId, "cookie", parameters);
   }
   if (operationObj.requestBody) {
     const requestBody = <types.RequestBodyObject>operationObj.requestBody;
-    setRequestBodyValidator(validator, requestBody);
+    setRequestBodyValidator(validator, operationId, requestBody);
   }
   return validator;
 }
 
 function setParameterValiator(
   validator: types.Validator,
+  operationId: string,
   kind: string,
   parameters: types.ParameterObject[]
 ) {
@@ -113,20 +115,36 @@ function setParameterValiator(
   if (kindOfParameters.length === 0) {
     return;
   }
-  const schema = kindOfParameters.reduce((s, p) => {
-    s.properties[p.name] = p.schema;
-    if (p.required) {
-      s.required.push(p.name);
-    }
-    return s;
-  }, { type: "object", properties: {}, required: [] });
-  validator[kind] = <types.Validate>parse.compile(schema);
+  const schema = kindOfParameters.reduce(
+    (s, p) => {
+      s.properties[p.name] = p.schema;
+      if (p.required) {
+        s.required.push(p.name);
+      }
+      return s;
+    },
+    { type: "object", properties: {}, required: [] }
+  );
+  try {
+    validator[kind] = <types.Validate>parse.compile(schema);
+  } catch (err) {
+    throw new Error(
+      `schema at ${operationId}.${kind} is invalid, err ${err.message}`
+    );
+  }
 }
 
 function setRequestBodyValidator(
   validator: types.Validator,
+  operationId: string,
   requestBody: types.RequestBodyObject
 ) {
   const mediaTypeObj = requestBody.content[Object.keys(requestBody.content)[0]];
-  validator.requestBody = <types.Validate>parse.compile(mediaTypeObj.schema);
+  try {
+    validator.requestBody = <types.Validate>parse.compile(mediaTypeObj.schema);
+  } catch (err) {
+    throw new Error(
+      `schema at ${operationId}.requestBody is invalid, err ${err.message}`
+    );
+  }
 }
