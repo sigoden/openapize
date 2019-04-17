@@ -1,6 +1,6 @@
 {
   "name": "@sigodenjs/openapize",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Mount rest api depends on OpenAPI doc file for express app.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

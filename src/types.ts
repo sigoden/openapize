@@ -11,8 +11,6 @@ export interface RequestHandler {
     (req: RequestExt, res: Response, next: NextFunction): any;
 }
 
-export type ErrorRequestHandler = (err: any, req: RequestExt, res: Response, next: NextFunction) => any;
-
 export type Method =
   | "get"
   | "put"

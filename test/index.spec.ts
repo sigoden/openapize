@@ -40,7 +40,7 @@ describe("check security", () => {
   const app = express();
   beforeAll(async () => {
     await initApp(app);
-    app.use(<ErrorRequestHandler>(err, req, res, next) => {
+    app.use((err, req, res, next) => {
       res.json({ err: err.message });
     });
   });
@@ -57,7 +57,7 @@ describe("validate input", () => {
   const app = express();
   beforeAll(async () => {
     await initApp(app);
-    app.use(<ErrorRequestHandler>(err, req, res, next) => {
+    app.use((err, req, res, next) => {
       res.json({ err: err.errors });
     });
   });
