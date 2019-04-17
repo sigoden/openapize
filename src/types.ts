@@ -1,15 +1,13 @@
-import { Request, NextFunction } from "express-serve-static-core";
+import * as express from "express";
+
+declare module "express" {
+  interface Request {
+      openapi: API;
+  }
+}
+
 import * as Ajv from "ajv";
 import * as specs from "./specs";
-
-export interface RequestExt extends Request {
-  openapi: API;
-};
-
-export interface RequestHandler {
-    // tslint:disable-next-line callable-types (This is extended from and can't extend from a type alias in ts<2.2
-    (req: RequestExt, res: Response, next: NextFunction): any;
-}
 
 export type Method =
   | "get"
@@ -60,7 +58,7 @@ export interface Options {
 }
 
 export interface HandlerFuncMap {
-  [k: string]: RequestHandler;
+  [k: string]: express.RequestHandler;
 }
 
 export * from "./specs";

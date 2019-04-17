@@ -1,6 +1,6 @@
 {
   "name": "@sigodenjs/openapize",
-  "version": "0.1.9",
+  "version": "0.1.11",
   "description": "Mount rest api depends on OpenAPI doc file for express app.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,7 +34,7 @@
     "dee"
   ],
   "dependencies": {
-    "@types/express-serve-static-core": "^4.16.2",
+    "@types/express": "^4.16.1",
     "ajv": "^6.10.0",
     "decimal.js": "^10.1.1",
     "lodash.capitalize": "^4.2.1",
@@ -42,7 +42,6 @@
     "swagger-parser": "^6.0.5"
   },
   "devDependencies": {
-    "@types/express": "^4.16.1",
     "@types/jest": "^24.0.11",
     "@types/lodash.capitalize": "^4.2.6",
     "@types/lodash.trimend": "^4.5.6",

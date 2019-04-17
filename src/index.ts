@@ -1,15 +1,11 @@
-import {
-  Response,
-  NextFunction,
-  IRouter,
-} from "express-serve-static-core";
+import * as types from "./types";
+import { Request, Response, IRouter, NextFunction, RequestHandler } from "express";
 
 import trimEnd = require("lodash.trimend");
 import { loadAPIs, parseAPIs } from "./api";
-import * as types from "./types";
 
-const unauthorized = (req: types.RequestExt, res: Response, next: NextFunction) => {
-  req.statusCode = 401;
+const unauthorized = (req: Request, res: Response, next: NextFunction) => {
+  res.status(401);
   next(new SecurityError("Unauthorized"));
 };
 
@@ -35,7 +31,7 @@ export class SecurityError extends Error {
   }
 }
 
-export async function openapize(router: IRouter, options: types.Options) {
+export async function openapize<T>(router: IRouter<T>, options: types.Options) {
   let apis: types.API[];
   if (typeof options.api === "string") {
     apis = await loadAPIs(options.api);
@@ -50,7 +46,7 @@ export async function openapize(router: IRouter, options: types.Options) {
       api = options.mapAPI(api);
     }
     if (handler) {
-      mountAPI(router, api, handler, security);
+      mountAPI<T>(router, api, handler, security);
     } else {
       const fn = options.noHandlerAPI || (() => {});
       fn(api);
@@ -58,15 +54,15 @@ export async function openapize(router: IRouter, options: types.Options) {
   });
 }
 
-function mountAPI(
-  router: IRouter,
+function mountAPI<T>(
+  router: IRouter<T>,
   api: types.API,
-  handler?: types.RequestHandler,
-  security?: types.RequestHandler
+  handler?: RequestHandler,
+  security?: RequestHandler
 ) {
   const mountPath = trimEnd(api.path.replace(/{([^}]+)}/g, ":$1"), "/");
   const handlerFuncs = [];
-  handlerFuncs.push((req: types.RequestExt, res: Response, next: NextFunction) => {
+  handlerFuncs.push((req: Request, res: Response, next: NextFunction) => {
     req.openapi = api;
     next();
   });
