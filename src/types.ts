@@ -1,14 +1,17 @@
-import { RequestHandler } from "express-serve-static-core";
+import { Request, NextFunction } from "express-serve-static-core";
 import * as Ajv from "ajv";
 import * as specs from "./specs";
 
-declare global {
-  namespace Express {
-    export interface Request {
-      openapi: API;
-    }
-  }
+export interface RequestExt extends Request {
+  openapi: API;
+};
+
+export interface RequestHandler {
+    // tslint:disable-next-line callable-types (This is extended from and can't extend from a type alias in ts<2.2
+    (req: RequestExt, res: Response, next: NextFunction): any;
 }
+
+export type ErrorRequestHandler = (err: any, req: RequestExt, res: Response, next: NextFunction) => any;
 
 export type Method =
   | "get"

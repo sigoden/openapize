@@ -1,6 +1,6 @@
 {
   "name": "@sigodenjs/openapize",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Mount rest api depends on OpenAPI doc file for express app.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,26 +34,26 @@
     "dee"
   ],
   "dependencies": {
-    "@types/express-serve-static-core": "^4.16.0",
-    "ajv": "^6.5.3",
-    "decimal.js": "^10.0.1",
+    "@types/express-serve-static-core": "^4.16.2",
+    "ajv": "^6.10.0",
+    "decimal.js": "^10.1.1",
     "lodash.capitalize": "^4.2.1",
     "lodash.trimend": "^4.5.1",
-    "swagger-parser": "^5.0.5"
+    "swagger-parser": "^6.0.5"
   },
   "devDependencies": {
-    "@types/express": "^4.16.0",
-    "@types/jest": "^23.3.2",
-    "@types/lodash.capitalize": "^4.2.4",
-    "@types/lodash.trimend": "^4.5.4",
-    "@types/node": "^10.9.4",
-    "@types/supertest": "^2.0.6",
+    "@types/express": "^4.16.1",
+    "@types/jest": "^24.0.11",
+    "@types/lodash.capitalize": "^4.2.6",
+    "@types/lodash.trimend": "^4.5.6",
+    "@types/node": "^11.13.4",
+    "@types/supertest": "^2.0.7",
     "body-parser": "^1.18.3",
-    "express": "^4.16.3",
-    "jest": "^23.5.0",
-    "rimraf": "^2.6.2",
-    "supertest": "^3.3.0",
-    "ts-jest": "^23.1.4",
-    "typescript": "^3.0.3"
+    "express": "^4.16.4",
+    "jest": "^24.7.1",
+    "rimraf": "^2.6.3",
+    "supertest": "^4.0.2",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.4.3"
   }
 }

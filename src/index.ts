@@ -1,15 +1,14 @@
 import {
-  Request,
   Response,
   NextFunction,
   IRouter,
-  RequestHandler
 } from "express-serve-static-core";
+
 import trimEnd = require("lodash.trimend");
 import { loadAPIs, parseAPIs } from "./api";
 import * as types from "./types";
 
-const unauthorized = (req: Request, res: Response, next: NextFunction) => {
+const unauthorized = (req: types.RequestExt, res: Response, next: NextFunction) => {
   req.statusCode = 401;
   next(new SecurityError("Unauthorized"));
 };
@@ -62,12 +61,12 @@ export async function openapize(router: IRouter, options: types.Options) {
 function mountAPI(
   router: IRouter,
   api: types.API,
-  handler?: RequestHandler,
-  security?: RequestHandler
+  handler?: types.RequestHandler,
+  security?: types.RequestHandler
 ) {
   const mountPath = trimEnd(api.path.replace(/{([^}]+)}/g, ":$1"), "/");
   const handlerFuncs = [];
-  handlerFuncs.push((req: Request, res: Response, next: NextFunction) => {
+  handlerFuncs.push((req: types.RequestExt, res: Response, next: NextFunction) => {
     req.openapi = api;
     next();
   });
