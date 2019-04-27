@@ -48,7 +48,7 @@ export interface API {
 export interface Options {
   api: string | specs.Document;
   // handler funcs
-  handlers?: HandlerFuncMap;
+  handlers: HandlerFuncMap;
   // security middleware funcs
   security?: HandlerFuncMap;
   // hook to modify api
