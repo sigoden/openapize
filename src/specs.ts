@@ -58,7 +58,7 @@ export interface PathItemObject {
   patch?: OperationObject;
   trace?: OperationObject;
   servers?: ServerObject[];
-  parameters?: Array<ReferenceObject | ParameterObject>;
+  parameters?: (ReferenceObject | ParameterObject)[];
 }
 
 export interface OperationObject {
@@ -67,7 +67,7 @@ export interface OperationObject {
   description?: string;
   externalDocs?: ExternalDocumentationObject;
   operationId?: string;
-  parameters?: Array<ReferenceObject | ParameterObject>;
+  parameters?: (ReferenceObject | ParameterObject)[];
   requestBody?: ReferenceObject | RequestBodyObject;
   responses?: ResponsesObject;
   callbacks?: { [callback: string]: ReferenceObject | CallbackObject };
@@ -101,13 +101,7 @@ interface ParameterBaseObject {
   examples?: { [media: string]: ReferenceObject | ExampleObject };
   content?: { [media: string]: MediaTypeObject };
 }
-export type NonArraySchemaObjectType =
-  | "null"
-  | "boolean"
-  | "object"
-  | "number"
-  | "string"
-  | "integer";
+export type NonArraySchemaObjectType = "null" | "boolean" | "object" | "number" | "string" | "integer";
 export type ArraySchemaObjectType = "array";
 export type SchemaObject = ArraySchemaObject | NonArraySchemaObject;
 
@@ -145,9 +139,9 @@ interface BaseSchemaObject {
   properties?: {
     [name: string]: SchemaObject;
   };
-  allOf?: Array<ReferenceObject | SchemaObject>;
-  oneOf?: Array<ReferenceObject | SchemaObject>;
-  anyOf?: Array<ReferenceObject | SchemaObject>;
+  allOf?: (ReferenceObject | SchemaObject)[];
+  oneOf?: (ReferenceObject | SchemaObject)[];
+  anyOf?: (ReferenceObject | SchemaObject)[];
   not?: ReferenceObject | SchemaObject;
 
   // OpenAPI-specific properties

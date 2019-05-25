@@ -1,16 +1,15 @@
 {
   "name": "@sigodenjs/openapize",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Mount rest api depends on OpenAPI doc file for express app.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "build:prod": "tsc -p tsconfig.prod.json",
     "clean": "rimraf dist",
     "test": "jest",
-    "prepublish": "npm run -s clean && npm run -s build:prod",
-    "lint": "tslint -p tsconfig.json --fix"
+    "prepublish": "npm run -s clean && npm run -s build",
+    "lint": "npx eslint --ext .ts src --fix"
   },
   "repository": {
     "type": "git",
@@ -25,6 +24,9 @@
   "directories": {
     "test": "test"
   },
+  "prettier": {
+    "printWidth": 120
+  },
   "files": [
     "dist"
   ],
@@ -36,23 +38,28 @@
   "dependencies": {
     "@types/express": "^4.16.1",
     "ajv": "^6.10.0",
-    "decimal.js": "^10.1.1",
+    "decimal.js": "^10.2.0",
     "lodash.capitalize": "^4.2.1",
     "lodash.trimend": "^4.5.1",
     "swagger-parser": "^6.0.5"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.11",
+    "@typescript-eslint/eslint-plugin": "^1.7.0",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "@types/jest": "^24.0.13",
+    "prettier": "^1.17.1",
     "@types/lodash.capitalize": "^4.2.6",
     "@types/lodash.trimend": "^4.5.6",
-    "@types/node": "^11.13.4",
+    "@types/node": "^12.0.2",
     "@types/supertest": "^2.0.7",
-    "body-parser": "^1.18.3",
-    "express": "^4.16.4",
-    "jest": "^24.7.1",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.0",
+    "jest": "^24.8.0",
     "rimraf": "^2.6.3",
     "supertest": "^4.0.2",
     "ts-jest": "^24.0.2",
-    "typescript": "^3.4.3"
+    "typescript": "^3.4.5"
   }
 }

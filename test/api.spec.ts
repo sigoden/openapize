@@ -1,18 +1,9 @@
 import * as path from "path";
-import { loadAPIFile, loadAPIs } from "../src/api";
+import { parseAPIs } from "../src/api";
 
-describe("loadAPIFile", () => {
-  test("should load openapi file", async () => {
-    const api = await loadAPIFile(
-      path.resolve(__dirname, "fixtures/petstore.yaml")
-    );
-    expect(api.openapi).toBe("3.0.0");
-  });
-});
-
-describe("loadAPIs", () => {
-  test("should load openapi file and parse apis", async () => {
-    const apis = await loadAPIs(
+describe("parseAPIs", () => {
+  test("should parse apis from file", async () => {
+    const apis = await parseAPIs(
       path.resolve(__dirname, "fixtures/petstore.yaml")
     );
     expect(apis).toHaveLength(3);
@@ -29,4 +20,9 @@ describe("loadAPIs", () => {
       true
     );
   });
+  test("should parse apis from api object", async () => {
+    const apiObj = require("./fixtures/petstore.json");
+    const apis = await parseAPIs(apiObj);
+    expect(apis).toHaveLength(3);
+  })
 });

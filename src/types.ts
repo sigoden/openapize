@@ -2,22 +2,14 @@ import * as express from "express";
 
 declare module "express" {
   interface Request {
-      openapi: API;
+    openapi: API;
   }
 }
 
 import * as Ajv from "ajv";
 import * as specs from "./specs";
 
-export type Method =
-  | "get"
-  | "put"
-  | "post"
-  | "delete"
-  | "options"
-  | "head"
-  | "patch"
-  | "trace";
+export type Method = "get" | "put" | "post" | "delete" | "options" | "head" | "patch" | "trace";
 
 export interface Security {
   name: string;

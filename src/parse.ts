@@ -32,32 +32,22 @@ const RANGES = {
 
 function int32(data) {
   return (
-    Number.isInteger(+data) &&
-    RANGES.int32.max.greaterThanOrEqualTo(data) &&
-    RANGES.int32.min.lessThanOrEqualTo(data)
+    Number.isInteger(+data) && RANGES.int32.max.greaterThanOrEqualTo(data) && RANGES.int32.min.lessThanOrEqualTo(data)
   );
 }
 
 function int64(data) {
   return (
-    Number.isInteger(+data) &&
-    RANGES.int64.max.greaterThanOrEqualTo(data) &&
-    RANGES.int64.min.lessThanOrEqualTo(data)
+    Number.isInteger(+data) && RANGES.int64.max.greaterThanOrEqualTo(data) && RANGES.int64.min.lessThanOrEqualTo(data)
   );
 }
 
 function float(data) {
-  return (
-    RANGES.float.max.greaterThanOrEqualTo(data) &&
-    RANGES.float.min.lessThanOrEqualTo(data)
-  );
+  return RANGES.float.max.greaterThanOrEqualTo(data) && RANGES.float.min.lessThanOrEqualTo(data);
 }
 
 function double(data) {
-  return (
-    RANGES.double.max.greaterThanOrEqualTo(data) &&
-    RANGES.double.min.lessThanOrEqualTo(data)
-  );
+  return RANGES.double.max.greaterThanOrEqualTo(data) && RANGES.double.min.lessThanOrEqualTo(data);
 }
 
 function byte(data) {
@@ -71,9 +61,7 @@ function byte(data) {
   }
   const firstPaddingChar = data.indexOf("=");
   return (
-    firstPaddingChar === -1 ||
-    firstPaddingChar === len - 1 ||
-    (firstPaddingChar === len - 2 && data[len - 1] === "=")
+    firstPaddingChar === -1 || firstPaddingChar === len - 1 || (firstPaddingChar === len - 2 && data[len - 1] === "=")
   );
 }
 

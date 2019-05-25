@@ -4,31 +4,13 @@ import capitalize = require("lodash.capitalize");
 import parse = require("./parse");
 
 const parser = new SwaggerParser();
-const METHODS = [
-  "get",
-  "put",
-  "post",
-  "delete",
-  "options",
-  "head",
-  "patch",
-  "trace"
-];
+const METHODS = ["get", "put", "post", "delete", "options", "head", "patch", "trace"];
 
-export async function loadAPIFile(file: string) {
-  const obj = await parser.dereference(file);
-  if (!obj.openapi) {
-    throw new Error(`not satisfied openapi spec, parse ${file}`);
+export async function parseAPIs(api: string | types.Document) {
+  const spec = await parser.dereference(api);
+  if (!spec.openapi) {
+    throw new Error(`not satisfied openapi spec`);
   }
-  return <types.Document>obj;
-}
-
-export async function loadAPIs(file: string) {
-  const spec = await loadAPIFile(file);
-  return parseAPIs(spec);
-}
-
-export function parseAPIs(spec: types.Document) {
   const apis: types.API[] = [];
   Object.keys(spec.paths).forEach(urlPath => {
     const pathItemObj = spec.paths[urlPath];
@@ -38,9 +20,7 @@ export function parseAPIs(spec: types.Document) {
         const operationObj = <types.OperationObject>pathItemObj[method];
         operationObj.parameters = operationObj.parameters || [];
         mergeParameters(pathItemObj, operationObj);
-        api.name = operationObj.operationId
-          ? operationObj.operationId
-          : genOpName(method, urlPath);
+        api.name = operationObj.operationId ? operationObj.operationId : genOpName(method, urlPath);
         operationObj.security = operationObj.security || spec.security;
         api.tags = operationObj.tags;
         if (operationObj.security && operationObj.security.length > 0) {
@@ -59,21 +39,14 @@ export function parseAPIs(spec: types.Document) {
   return apis;
 }
 
-function mergeParameters(
-  pathItemObj: types.PathItemObject,
-  operationObj: types.OperationObject
-) {
+function mergeParameters(pathItemObj: types.PathItemObject, operationObj: types.OperationObject) {
   if (!pathItemObj.parameters || pathItemObj.parameters.length === 0) {
     return;
   }
   const pathItemParams = <types.ParameterObject[]>pathItemObj.parameters;
   const operationParams = <types.ParameterObject[]>operationObj.parameters;
   for (const pathItemParam of pathItemParams) {
-    if (
-      operationParams.find(
-        p => p.in === pathItemParam.in && p.name === pathItemParam.name
-      )
-    ) {
+    if (operationParams.find(p => p.in === pathItemParam.in && p.name === pathItemParam.name)) {
       continue;
     }
     operationParams.push(pathItemParam);
@@ -129,9 +102,7 @@ function setParameterValiator(
   try {
     validator[kind] = <types.Validate>parse.compile(schema);
   } catch (err) {
-    throw new Error(
-      `schema at ${operationId}.${kind} is invalid, err ${err.message}`
-    );
+    throw new Error(`schema at ${operationId}.${kind} is invalid, err ${err.message}`);
   }
 }
 
@@ -144,8 +115,6 @@ function setRequestBodyValidator(
   try {
     validator.requestBody = <types.Validate>parse.compile(mediaTypeObj.schema);
   } catch (err) {
-    throw new Error(
-      `schema at ${operationId}.requestBody is invalid, err ${err.message}`
-    );
+    throw new Error(`schema at ${operationId}.requestBody is invalid, err ${err.message}`);
   }
 }

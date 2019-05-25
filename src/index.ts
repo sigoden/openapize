@@ -2,7 +2,7 @@ import * as types from "./types";
 import { Request, Response, IRouter, NextFunction, RequestHandler } from "express";
 
 import trimEnd = require("lodash.trimend");
-import { loadAPIs, parseAPIs } from "./api";
+import { parseAPIs } from "./api";
 
 const unauthorized = (req: Request, res: Response, next: NextFunction) => {
   res.status(401);
@@ -32,16 +32,10 @@ export class SecurityError extends Error {
 }
 
 export async function openapize<T>(router: IRouter<T>, options: types.Options) {
-  let apis: types.API[];
-  if (typeof options.api === "string") {
-    apis = await loadAPIs(options.api);
-  } else {
-    apis = await parseAPIs(options.api);
-  }
+  let apis = await parseAPIs(options.api);
   apis.forEach(api => {
     const handler = options.handlers && options.handlers[api.name];
-    const security =
-      options.security && api.security && options.security[api.security.name];
+    const security = options.security && api.security && options.security[api.security.name];
     if (options.mapAPI) {
       api = options.mapAPI(api);
     }
@@ -54,12 +48,7 @@ export async function openapize<T>(router: IRouter<T>, options: types.Options) {
   });
 }
 
-function mountAPI<T>(
-  router: IRouter<T>,
-  api: types.API,
-  handler?: RequestHandler,
-  security?: RequestHandler
-) {
+function mountAPI<T>(router: IRouter<T>, api: types.API, handler?: RequestHandler, security?: RequestHandler) {
   const mountPath = trimEnd(api.path.replace(/{([^}]+)}/g, ":$1"), "/");
   const handlerFuncs = [];
   handlerFuncs.push((req: Request, res: Response, next: NextFunction) => {
