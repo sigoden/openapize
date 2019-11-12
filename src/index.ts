@@ -31,7 +31,7 @@ export class SecurityError extends Error {
   }
 }
 
-export async function openapize<T>(router: IRouter<T>, options: types.Options) {
+export async function openapize(router: IRouter, options: types.Options) {
   let apis = await parseAPIs(options.api);
   apis.forEach(api => {
     const handler = options.handlers && options.handlers[api.name];
@@ -40,7 +40,7 @@ export async function openapize<T>(router: IRouter<T>, options: types.Options) {
       api = options.mapAPI(api);
     }
     if (handler) {
-      mountAPI<T>(router, api, handler, security);
+      mountAPI(router, api, handler, security);
     } else {
       const fn = options.noHandlerAPI || (() => {});
       fn(api);
@@ -48,7 +48,7 @@ export async function openapize<T>(router: IRouter<T>, options: types.Options) {
   });
 }
 
-function mountAPI<T>(router: IRouter<T>, api: types.API, handler?: RequestHandler, security?: RequestHandler) {
+function mountAPI(router: IRouter, api: types.API, handler?: RequestHandler, security?: RequestHandler) {
   const mountPath = trimEnd(api.path.replace(/{([^}]+)}/g, ":$1"), "/");
   const handlerFuncs = [];
   handlerFuncs.push((req: Request, res: Response, next: NextFunction) => {
